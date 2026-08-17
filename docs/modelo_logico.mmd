@@ -1,0 +1,55 @@
+erDiagram
+    SALONES ||--o{ RESERVAS : "es reservado en"
+    CLIENTES ||--o{ RESERVAS : "realiza"
+    RESERVAS ||--o{ PAGOS : "recibe"
+    SALONES ||--o{ AUDITORIA_PRECIOS : "registra cambios de"
+
+    SALONES {
+        int salon_id PK
+        varchar nombre
+        int capacidad
+        decimal precio_hora
+        enum estado "Disponible / Ocupado / En mantenimiento"
+        varchar encargado
+        timestamp fecha_creacion
+    }
+
+    CLIENTES {
+        int cliente_id PK
+        varchar nombre_completo
+        varchar identificacion UK
+        varchar telefono
+        varchar correo UK
+        enum tipo_cliente "Individual / Corporativo"
+        timestamp fecha_registro
+    }
+
+    RESERVAS {
+        int reserva_id PK
+        int cliente_id FK
+        int salon_id FK
+        datetime fecha_inicio
+        datetime fecha_fin
+        decimal precio_hora_aplicado "tarifa fijada al crear la reserva"
+        decimal total_horas "virtual, no almacenado"
+        decimal valor_total "virtual, no almacenado, IVA 19%"
+        enum estado "Activa / Cancelada / Finalizada"
+        timestamp fecha_creacion
+    }
+
+    PAGOS {
+        int pago_id PK
+        int reserva_id FK
+        date fecha_pago
+        decimal monto_pagado
+        enum metodo_pago "Efectivo / Tarjeta / Transferencia"
+    }
+
+    AUDITORIA_PRECIOS {
+        int auditoria_id PK
+        int salon_id FK
+        varchar usuario
+        datetime fecha_cambio
+        decimal precio_anterior
+        decimal precio_nuevo
+    }
